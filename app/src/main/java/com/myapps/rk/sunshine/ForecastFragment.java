@@ -1,7 +1,11 @@
 package com.myapps.rk.sunshine;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.text.format.Time;
@@ -12,8 +16,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -53,7 +59,7 @@ public class ForecastFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
-
+        //Dummy Data
         String[] forecastArray = {
                 "Today - Sunny - 88/63",
                 "Tomorrow - Cloudy - 88/63",
@@ -63,17 +69,37 @@ public class ForecastFragment extends Fragment {
                 "Sunday - Sunny - 88/63",
         };
 
+        //Dummy
         List<String> weekForecast = new ArrayList<String>(
                 Arrays.asList(forecastArray));
 
         mForecastAdapter = new ArrayAdapter<String>(
                 getActivity(),
                 R.layout.list_item_forecast,
-                R.id.list_item_forecast_textview
+                R.id.list_item_forecast_textview,
+                new ArrayList<String>()
         );
 
         ListView listview = (ListView) rootView.findViewById(R.id.listview_forecast);
         listview.setAdapter(mForecastAdapter);
+        listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+                int duration = Toast.LENGTH_SHORT;
+                //Context context = getContext();
+                Context context = getActivity();
+                String forecast = mForecastAdapter.getItem(i);
+
+                Toast showToast = Toast.makeText(context, forecast, duration);
+                showToast.show();
+
+                Intent detailActivity = new Intent();
+                detailActivity.setClass(context, DetailActivity.class);
+                detailActivity.putExtra(Intent.EXTRA_TEXT, forecast);
+                startActivity(detailActivity);
+            }
+        });
 
         return rootView;
     }
@@ -90,11 +116,31 @@ public class ForecastFragment extends Fragment {
         int id = item.getItemId();
 
        if (id == R.id.action_refresh) {
-           FetchWeatherTask fetchWeather = new FetchWeatherTask();
-           fetchWeather.execute("London");
+           updateWeather();
+         /*  FetchWeatherTask fetchWeather = new FetchWeatherTask();
+           SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+           String location = prefs.getString(getString(R.string.pref_location_key),
+                   getString(R.string.pref_location_default));
+           //fetchWeather.execute("London");
+           fetchWeather.execute(location); */
+           //moved above code to updateWeather() method to show data without refresh
            return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void updateWeather() {
+        FetchWeatherTask weatherTask = new FetchWeatherTask();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String location = prefs.getString(getString(R.string.pref_location_key),
+                   getString(R.string.pref_location_default));
+             weatherTask.execute(location);
+        }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        updateWeather();
     }
 
     public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
@@ -237,6 +283,20 @@ public class ForecastFragment extends Fragment {
          */
         private String formatHighLows(double high, double low) {
             // For presentation, assume the user doesn't care about tenths of a degree.
+            SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            String unitType = sharedPrefs.getString(
+                    getString(R.string.pref_units_key),
+                    getString(R.string.pref_units_metric));
+
+            if(unitType.equals(getString(R.string.pref_units_imperial)))
+            {
+                high = (high * 1.8) + 32;
+                low = (low * 1.8) + 32;
+            } else if(!unitType.equals(getString(R.string.pref_units_metric)))
+            {
+                Log.d(LOG_TAG, "Unit type not found" + unitType);
+            }
+
             long roundedHigh = Math.round(high);
             long roundedLow = Math.round(low);
 

@@ -4,6 +4,7 @@
     android:layout_height="match_parent"
     android:minHeight="?android:attr/listPreferredItemHeight"
     android:layout_gravity="center_vertical"
-    android:id="@+id/list_item_forecast_textview">
+    android:id="@+id/list_item_forecast_textview"
+    android:background="@drawable/list_item">
 
 </TextView>
