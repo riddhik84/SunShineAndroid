@@ -21,6 +21,7 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d(LOG_TAG, "Inside onCreate()");
         setContentView(R.layout.activity_main);
     }
 
@@ -78,5 +79,59 @@ public class MainActivity extends ActionBarActivity {
         }else {
             Log.d(LOG_TAG, "Could not call " + location);
         }
+    }
+
+    @Override
+    protected void onStart()
+    {
+        super.onStart();
+        Log.d(LOG_TAG, "Inside onStart()");
+    }
+
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+        Log.d(LOG_TAG, "Inside onResume()");
+    }
+
+    @Override
+    protected void onPause(){
+        super.onPause();
+        Log.d(LOG_TAG, "Inside onPause()");
+    }
+
+    @Override
+    protected void onStop()
+    {
+        super.onStop();
+        Log.d(LOG_TAG, "Inside onStop()");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d(LOG_TAG, "Inside onDestroy()");
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Log.d(LOG_TAG, "Inside onRestart()");
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState){
+        super.onSaveInstanceState(outState);
+        Log.d(LOG_TAG, "Inside onSaveInstanceState()");
+        outState.putString("SAMPLE_DATA", "sampleString");
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle inState){
+        super.onRestoreInstanceState(inState);
+        Log.d(LOG_TAG, "Inside onRestoreInstanceState()");
+        String sampleData = inState.getString("SAMPLE_DATA");
+        Log.d(LOG_TAG, "SAMPLE_DATA = " +sampleData);
     }
 }

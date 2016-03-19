@@ -23,7 +23,7 @@ import org.w3c.dom.Text;
 public class DetailActivityFragment extends Fragment {
 
     private static final String LOG_TAG = DetailActivityFragment.class.getSimpleName();
-    private static final String FORECAST_SHARE_HASHTAG = "#SunshineApp";
+    private static final String FORECAST_SHARE_HASHTAG = " #SunshineApp";
     private String mForecastStr;
 
     public DetailActivityFragment() {

@@ -17,6 +17,16 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    buildTypes.each {
+        it.buildConfigField 'String', 'WEATHERDB_API_KEY', MyWeatherDBApiKey
+    }
+
+    applicationVariants.all { variant ->
+        variant.outputs.each { output ->
+            output.outputFile = file("$project.buildDir/outputs/apk/debug-sunshine.apk")
+        }
+    }
 }
 
 dependencies {

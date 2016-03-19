@@ -169,7 +169,7 @@ public class ForecastFragment extends Fragment {
             //String days = "7";
 
             //KEY removed
-            String appKey = "f0704137045a0eb10edc0754bd5228f6";
+            String appKey = BuildConfig.WEATHERDB_API_KEY;
 
             try {
                 // Construct the URL for the OpenWeatherMap query
